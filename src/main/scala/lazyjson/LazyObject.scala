@@ -1,5 +1,7 @@
 package lazyjson
 
+import scala.reflect.ClassTag
+
 class LazyObject(underlying: me.doubledutch.lazyjson.LazyObject) extends Map[String, Any] with LazyElement {
   override def +[V1 >: Any](kv: (String, V1)): Map[String, V1] = {
     underlying.put(kv._1, kv._2)
@@ -7,6 +9,10 @@ class LazyObject(underlying: me.doubledutch.lazyjson.LazyObject) extends Map[Str
   }
 
   override def get(key: String): Option[Any] = Option(underlying.opt(key)).map(wrap)
+
+  def getAs[T: ClassTag](key: String): T = getAsOpt[T](key).getOrElse(throw new NoSuchElementException(key))
+
+  def getAsOpt[T: ClassTag](key: String): Option[T] = get(key) collect { case x: T => x }
 
   override def iterator: Iterator[(String, Any)] = new Iterator[(String, Any)] {
 

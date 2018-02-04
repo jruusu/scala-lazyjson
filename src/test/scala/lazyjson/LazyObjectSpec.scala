@@ -32,4 +32,16 @@ class LazyObjectSpec extends FlatSpec with Matchers {
     obj.get("eval") shouldEqual Some("\n")
     obj.get("notthere") shouldEqual None
   }
+
+  "getAsOpt" should "chooch" in {
+    obj.getAsOpt[String]("foo") shouldEqual None
+    obj.getAsOpt[String]("sval").value shouldBe a[String]
+    obj.getAsOpt[LazyObject]("oval").value shouldBe a[LazyObject]
+  }
+
+  "getAs" should "chooch" in {
+    assertThrows[NoSuchElementException] { obj.getAs[String]("foo") }
+    obj.getAs[String]("sval") shouldBe a[String]
+    obj.getAs[LazyObject]("oval") shouldBe a[LazyObject]
+  }
 }

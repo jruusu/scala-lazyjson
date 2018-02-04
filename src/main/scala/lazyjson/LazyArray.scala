@@ -1,9 +1,23 @@
 package lazyjson
 
-class LazyArray(underlying: me.doubledutch.lazyjson.LazyArray) extends LazyElement {
-  def get(index: Int): Any = wrap(underlying.get(index))
+import scala.util.Try
 
-  def opt(index: Int): Option[Any] = Option(underlying.opt(index)).map(wrap)
+class LazyArray(underlying: me.doubledutch.lazyjson.LazyArray) extends Seq[Any] with LazyElement {
+  override def apply(idx: Int): Any = wrap(underlying.get(idx))
+
+  override def iterator: Iterator[Any] = new Iterator[Any] {
+    private var current = 0
+
+    override def hasNext: Boolean = Try(apply(current)).isSuccess
+
+    override def next(): Any = {
+      val next = apply(current)
+      current += 1
+      next
+    }
+  }
+
+  override def length: Int = underlying.length()
 }
 
 object LazyArray {

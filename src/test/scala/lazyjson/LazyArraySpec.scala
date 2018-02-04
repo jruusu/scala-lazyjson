@@ -16,7 +16,7 @@ class LazyArraySpec extends FlatSpec with Matchers {
     arr(6) shouldBe a[LazyArray]
     arr(7) shouldBe a[LazyObject]
     arr(8) shouldEqual "\n"
-    assertThrows[me.doubledutch.lazyjson.LazyException] { arr(9) }
+    assertThrows[ArrayIndexOutOfBoundsException] { arr(9) }
   }
 
   "iterable" should "chooch" in {

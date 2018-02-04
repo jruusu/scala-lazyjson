@@ -3,7 +3,9 @@ package lazyjson
 import scala.util.Try
 
 class LazyArray(underlying: me.doubledutch.lazyjson.LazyArray) extends Seq[Any] with LazyElement {
-  override def apply(idx: Int): Any = wrap(underlying.get(idx))
+  override def apply(idx: Int): Any = Try(wrap(underlying.get(idx))) getOrElse {
+    throw new ArrayIndexOutOfBoundsException(idx)
+  }
 
   override def iterator: Iterator[Any] = new Iterator[Any] {
     private var current = 0
